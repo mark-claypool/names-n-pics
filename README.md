@@ -51,9 +51,7 @@ Type:
 
 `make`
 
-This should extract the images from `roster.pdf`, extract the names from `roster.txt`, create a temporary markdown file `pic-name.md` and finally generate the classlist with pictures as:
-
-`pic-name.pdf`
+This should extract the images from `roster.pdf`, extract the names from `roster.txt`, create a temporary markdown file `pic-name.md` and finally generate the classlist with pictures as: "**pic-name.pdf**"
 
 
 5. (Optional) Clean up.
