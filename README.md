@@ -23,13 +23,11 @@ It's been tested on Linux (Ubuntu).
 
 ## Instructions
 
-1. **Get class list**
+1. Get class list
 
 `Workday -> Teaching -> View Course Section Roster -> (select class)`
 
-
-
-2. **Export to PDF**
+2. Export to PDF
 
 `View printable Version (PDF)` (button labeled "PDF" in upper right corner)
 
