@@ -25,8 +25,9 @@ It's been tested on Linux (Ubuntu).
 
 1. Get class list
 
-> Workday -> Teaching -> View Course Section Roster -> (select class)
-
+```
+Workday -> Teaching -> View Course Section Roster -> (select class)
+```
 
 
 2. Export to PDF
