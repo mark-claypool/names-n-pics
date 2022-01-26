@@ -23,20 +23,17 @@ It's been tested on Linux (Ubuntu).
 
 ## Instructions
 
-1. Get class list
+1. **Get class list**
 
-```
-Workday -> Teaching -> View Course Section Roster -> (select class)
-```
+`Workday -> Teaching -> View Course Section Roster -> (select class)`
 
 
-2. Export to PDF
 
-```
-View printable Version (PDF) (button labeled "PDF" in upper right corner)
-```
+2. **Export to PDF**
 
-    Save this file as "roster.pdf"
+`View printable Version (PDF)` (button labeled "PDF" in upper right corner)
+
+Save this file as "roster.pdf"
 
 
 3. Export to Excel (requires Excel)
