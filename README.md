@@ -31,44 +31,40 @@ It's been tested on Linux (Ubuntu).
 
 2. Export to PDF
 
-View printable Version (PDF) (button labeled "PDF" in upper right
-corner)
+> View printable Version (PDF) (button labeled "PDF" in upper right corner)
 
 Save this file as "roster.pdf"
 
 
 3. Export to Excel (requires Excel)
 
-(button with a little X to the top right of the roster window)
+> (button with a little X to the top right of the roster window)
 
-"Save as" a tab-delimited file named "roster.txt"
+> "Save as" a tab-delimited file named "roster.txt"
 
 
 4. Extract images, get names, build document
 
-Note, requires `pdfimages` (On Linux: apt install poppler-utils`)
-and `pandoc` (On Linux: `apt install pandoc`).
+> Note, requires `pdfimages` (On Linux: apt install poppler-utils`) and `pandoc` (On Linux: `apt install pandoc`).
 
 Type:
 
 `make`
 
-This should extract the images from `roster.pdf`, extract the names
-from `roster.txt`, create a temporary markdown file `pic-name.md`
-and finally generate the classlist with pictures as:
+> This should extract the images from `roster.pdf`, extract the names from `roster.txt`, create a temporary markdown file `pic-name.md` and finally generate the classlist with pictures as:
 
 `pic-name.pdf`
 
 
 7. (Optional) Clean up.
 
-To remove temporary files made, type:
+> To remove temporary files made, type:
 
-`make clean`
+> `make clean`
 
-To remove everything, including final PDF type:
+> To remove everything, including final PDF type:
 
-`make very-clean`
+> `make very-clean`
 
 
 ## To Do
