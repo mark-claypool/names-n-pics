@@ -23,25 +23,26 @@ It's been tested on Linux (Ubuntu).
 
 ## Instructions
 
+----------------------
 1. Get class list
 
 `Workday -> Teaching -> View Course Section Roster -> (select class)`
 
-
+----------------------
 2. Export to PDF
 
 `View printable Version (PDF)` (button labeled "PDF" in upper right corner)
 
 Save this file as "roster.pdf"
 
-
+----------------------
 3. Export to Excel (requires Excel)
 
 (button with a little X to the top right of the roster window)
 
 "Save as" a tab-delimited file named "roster.txt"
 
------------
+----------------------
 4. Extract images, get names, build document
 
 Note, requires `pdfimages` (On Linux: apt install poppler-utils`) and
@@ -53,7 +54,7 @@ Type:
 
 This should extract the images from `roster.pdf`, extract the names from `roster.txt`, create a temporary markdown file `pic-name.md` and finally generate the classlist with pictures as: "**pic-name.pdf**"
 
-
+----------------------
 5. (Optional) Clean up.
 
 To remove temporary files made, type:
@@ -65,6 +66,7 @@ To remove everything, including final PDF type:
 `make very-clean`
 
 
+----------------------
 ## To Do
 
 Cleaner ouput, maybe one with "flash cards" to help learn name.
@@ -73,7 +75,7 @@ Single script that does it all (after initial saves).
 
 Make options to generate "pic-name.html" and "pic-name.docx".
 
-------------
+----------------------
 
 Enjoy!
 
