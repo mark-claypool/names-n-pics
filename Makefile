@@ -11,6 +11,7 @@ all: roster.txt roster.pdf
 
 clean:
 	$(RM) -f *.png
+	$(RM) -f names.txt
 	$(RM) -f pic-name.md 
 
 very-clean: clean
