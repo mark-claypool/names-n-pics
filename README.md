@@ -32,9 +32,11 @@ Workday -> Teaching -> View Course Section Roster -> (select class)
 
 2. Export to PDF
 
-> View printable Version (PDF) (button labeled "PDF" in upper right corner)
+```
+View printable Version (PDF) (button labeled "PDF" in upper right corner)
+```
 
-Save this file as "roster.pdf"
+    Save this file as "roster.pdf"
 
 
 3. Export to Excel (requires Excel)
