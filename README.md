@@ -51,7 +51,7 @@ Save this file as "roster.pdf"
 
 4. Extract images, get names, build document
 
-Note, requires `pdfimages` (On Linux: apt install poppler-utils`) and
+Note, requires `pdfimages` (On Linux: `apt install poppler-utils`) and
 `pandoc` (On Linux: `apt install pandoc`).
 
 Type:
