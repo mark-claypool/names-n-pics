@@ -41,7 +41,7 @@ Save this file as "roster.pdf"
 
 "Save as" a tab-delimited file named "roster.txt"
 
-
+-----------
 4. Extract images, get names, build document
 
 Note, requires `pdfimages` (On Linux: apt install poppler-utils`) and
