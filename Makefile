@@ -5,6 +5,7 @@
 RM=/bin/rm
 
 all: roster.txt roster.pdf
+	/bin/rm -f names.txt
 	cat roster.txt | awk -F '\t' '{print $2}' | grep ',' > names.txt
 	pdfimages -png roster.pdf image
 	./make-name-pic.sh
