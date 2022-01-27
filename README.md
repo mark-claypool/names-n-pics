@@ -92,6 +92,8 @@ Single script that does it all (after initial saves).
 
 Make options to generate "name-pic.html" and "name-pic.docx".
 
+Finalize receipt of roster files by email, returning "name-pic.pdf". See: `~/src/procmail/`
+
 ----------------------
 
 Enjoy!
