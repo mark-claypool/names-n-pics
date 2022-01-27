@@ -12,8 +12,8 @@
 # Ignore generated/temporary files
 roster.pdf
 roster.txt
-pic-name.md
-pic-name.pdf
+name-pic.md
+name-pic.pdf
 names.txt
 *.png
 

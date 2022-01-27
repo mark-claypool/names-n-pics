@@ -1,13 +1,20 @@
 #!/bin/bash
 
 #
-# Script to generate pdf from images and names,
-# both extracted from Workday.
+# Script to generate pdf from images and names, both extracted from
+# Workday.
+#
+# Usage: make-name-pic.sh (no arguments)
+#
+# Requires "roster.txt" and images made from the class roster.
+# See: https://github.com/mark-claypool/names-n-pics
 #
 # Last signficantly modified: January 2022
+#
 
-MD=pic-name.md
-OUT=pic-name.pdf
+VERSION=v1.0
+MD=name-pic.md
+OUT=name-pic.pdf
 NAMES=names.txt
 IMG=image
 
@@ -15,6 +22,7 @@ IMG=image
 /bin/rm -f $OUT
 /bin/rm -f $MD
 
+# Loop through each name, adding to markdown.
 i=0
 while IFS= read -r name; do
 
@@ -41,9 +49,8 @@ while IFS= read -r name; do
   
 done < "$NAMES"
 
+# Run pandoc to format markdown to PDF.
 echo "Running pandoc..."
-
 pandoc --standalone --self-contained -V fontsize=12pt -V geometry:"margin=1in" -o $OUT $MD
 
 echo "OUTPUT: $OUT"
-

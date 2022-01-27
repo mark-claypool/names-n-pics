@@ -8,10 +8,11 @@ These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
 
 It's designed to work with the classlists created by Workday, which
-(at WPI) only have a thumbnail version of the photo embedded in a list
-of class information.  The script extracts each photo to a decent size
-and includes it with a name.  This may be useful for, say, learning
-the names of students in a class.
+(at WPI) only have a thumbnail version of the student photos, and
+these are embedded in a list with all the class information.  The
+script extracts each photo to a decent size and includes it with just
+a name.  This may be useful for, say, learning the names of students
+in a class.
 
 Following these instructions requires the tools:
 
@@ -23,7 +24,6 @@ Following these instructions requires the tools:
 It's been tested on Linux (Ubuntu).
 
 ----------------------
-
 
 ## Instructions
 
@@ -59,10 +59,13 @@ Type:
 `make`
 
 This should extract the images from `roster.pdf`, extract the names
-from `roster.txt`, create a temporary markdown file `pic-name.md` and
-finally generate the classlist with pictures as: "**pic-name.pdf**"
+from `roster.txt`, create a temporary markdown file `name-pic.md` and
+finally generate the classlist with pictures: 
+
+"**name-pic.pdf**"
 
 ----------------------
+
 5. (Optional) Clean up.
 
 To remove temporary files made, type:
@@ -73,7 +76,6 @@ To remove everything, including final PDF type:
 
 `make very-clean`
 
-
 ----------------------
 
 ## To Do
@@ -82,7 +84,7 @@ Cleaner output, maybe one with "flash cards" to help learn name.
 
 Single script that does it all (after initial saves).
 
-Make options to generate "pic-name.html" and "pic-name.docx".
+Make options to generate "name-pic.html" and "name-pic.docx".
 
 ----------------------
 
