@@ -80,6 +80,12 @@ To remove everything, including final PDF type:
 
 ## To Do
 
+Should be able to generate "roster.txt" from "roster.xlsx" (simplifying step #3). e.g., 
+
+```
+  xlsx2csv roster.xlsx | column -t',' 1 | grep -v '^[[:blank:]]*$'| tail -n+2 > roster.txt
+```
+
 Cleaner output, maybe one with "flash cards" to help learn name.
 
 Single script that does it all (after initial saves).
