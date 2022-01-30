@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v2.1
+VERSION=v2.2
 MD=names-n-pics.md
 OUT=names-n-pics.pdf
 NAMES=names.txt
@@ -217,7 +217,7 @@ while IFS= read -r name; do
 done < "$NAMES"
 
 # Handle any remaining uncaptioned photos.
-if [ ! "$col" == "0" ] ; then
+if [ ! "$col" == "1" ] ; then
   for  (( j=0; j<$col; j++ )); do
     caption "${array[$j]}" $j
   done
