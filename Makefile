@@ -4,18 +4,16 @@
 
 RM=/bin/rm
 
-all: roster.txt roster.pdf
-	/bin/rm -f names.txt
-	cat roster.txt | awk -F '\t' '{print $2}' | grep ',' > names.txt
-	pdfimages -png roster.pdf image
-	./make-name-pic.sh
+all: roster.xlsx roster.pdf
+	./make-names-n-pics.sh
 
 clean:
 	$(RM) -f *.png
+	$(RM) -f roster.csv
 	$(RM) -f names.txt
-	$(RM) -f name-pic.md 
+	$(RM) -f names-n-pics.md 
 
 very-clean: clean
-	$(RM) -f name-pic.pdf
+	$(RM) -f names-n-pics.pdf
 
 

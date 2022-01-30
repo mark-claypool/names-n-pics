@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v1.0
+v2.0
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
@@ -17,9 +17,15 @@ in a class.
 Following these instructions requires the tools:
 
 - Workday (to get the classlist, PDF and Excel)
-- Excel (to convert the class list to text for names)
 - pdfimages (to extract the images from the PDF)
+    + (On Linux: `apt install poppler-utils`)
 - bash (to run the script)
+- xlsx2csv (to convert the Excel file to csv)
+- Latex caption package (for aligning figures, 3 per row)
+- Latex subcaption package (for centering names on figures)
+- convert (from ImageMagick, for padding figures that are narrow)
+- pandoc (for converting markdown to PDF)
+    + (On Linux: `apt install pandoc`).
 
 It's been tested on Linux (Ubuntu).
 
@@ -37,32 +43,27 @@ It's been tested on Linux (Ubuntu).
 
 `View printable Version (PDF)` (button labeled "PDF" in upper right corner)
 
-Save this file as "roster.pdf"
+Download this file, save as "roster.pdf".
 
 ----------------------
 
-3. Export class list to Excel (requires Excel)
+3. Export class list to Excel
 
 (button with a little X to the top right of the roster window)
 
-"Save as" a tab-delimited file named "roster.txt"
+Download this file, save as "roster.xlsx".
 
 ----------------------
 
 4. Extract images, get names, build document
 
-Note, requires `pdfimages` (On Linux: `apt install poppler-utils`) and
-`pandoc` (On Linux: `apt install pandoc`).
-
-Type:
-
-`make`
+Type: `make`
 
 This should extract the images from `roster.pdf`, extract the names
-from `roster.txt`, create a temporary markdown file `name-pic.md` and
+from `roster.txt`, create a temporary markdown file `names-n-pic.md` and
 finally generate the classlist with pictures: 
 
-"**name-pic.pdf**"
+"**names-n-pic.pdf**"
 
 ----------------------
 
@@ -80,19 +81,9 @@ To remove everything, including final PDF type:
 
 ## To Do
 
-Should be able to generate "roster.txt" from "roster.xlsx" (simplifying step #3). e.g., 
+Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
-```
-  xlsx2csv roster.xlsx | column -t',' 1 | grep -v '^[[:blank:]]*$'| tail -n+2 > roster.txt
-```
-
-Cleaner output, maybe one with "flash cards" to help learn name.
-
-Single script that does it all (after initial saves).
-
-Make options to generate "name-pic.html" and "name-pic.docx".
-
-Finalize receipt of roster files by email, returning "name-pic.pdf". See: `~/src/procmail/`
+More testing and probably better error handling.
 
 ----------------------
 
