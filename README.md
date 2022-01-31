@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v2.3
+v2.4
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.

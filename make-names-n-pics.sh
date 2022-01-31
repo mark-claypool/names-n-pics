@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v2.3
+VERSION=v2.4
 MD=names-n-pics.md
 OUT=names-n-pics.pdf
 NAMES=names.txt
@@ -26,12 +26,14 @@ IMG=image
 ROSTER=roster
 CSV=temp.csv
 MAX_COLS=3
+NONAMES=0
 
 #####################################
 # usage - print usage message and quit.
 function usage() {
   echo "make-names-n-pics.sh ($VERSION) - create classlist with pictures"
-  echo "  usage: make-names-n-pics.sh [-hd]"
+  echo "  usage: make-names-n-pics.sh [-hdn]"
+  echo "         -n  do not generate names, but use pre-built '$NAMES'"
   echo "         -d  turn on debug (default off)"
   echo "         -h  this help message"
   exit 1
@@ -39,8 +41,10 @@ function usage() {
 
 #######################################
 # parse command line args.
-while getopts "dh?" opt; do
+while getopts "dhn?" opt; do
   case "${opt}" in
+    n)  NONAMES=1
+	;;
     d)  set -x
 	;;
     h|\?|*)
@@ -125,27 +129,42 @@ function caption() {
 echo "Cleaning up old files..."
 /bin/rm -f $OUT
 /bin/rm -f $MD
-/bin/rm -f $NAMES
 /bin/rm -f $CSV
+if [ "$NONAMES" == "0" ] ; then
+  /bin/rm -f $NAMES
+fi
 
 # Extract images.
 echo "Extracting images..."
 pdfimages -png $ROSTER.pdf $IMG
 
-# Extract names.
-echo "Extracting names..."
+# Convert xlsx to csv.
+echo "Converting xlsx to csv..."
 xlsx2csv $ROSTER.xlsx > $CSV
-start=`grep -Tn "Email Address" temp.csv | sed s/:/\/g | awk '{print $1}' | head -n 1`
-start=$((start+1))
-tail -n +$start $CSV | \
-    grep -v "Waitlisted Students" | \
-    grep -v "Email Address" | \
-    awk -F ',' '{print $3, $2}' | \
-    grep -v '^[[:blank:]]*$' | \
-    sed s/,/\/g | \
-    sed s/\"/\/g | \
-    grep -v "Registered" | \
-    grep -v "Waitlisted" > $NAMES
+
+# Extract names.
+if [ "$NONAMES" == "0" ] ; then
+  echo "Extracting names..."
+  start=`grep -Tn "Email Address" temp.csv | sed s/:/\/g | awk '{print $1}' | head -n 1`
+  start=$((start+1))
+  tail -n +$start $CSV | \
+      grep -v "Waitlisted Students" | \
+      grep -v "Email Address" | \
+      awk -F ',' '{print $3, $2}' | \
+      grep -v '^[[:blank:]]*$' | \
+      sed s/,/\/g | \
+      sed s/\"/\/g | \
+      grep -v "Registered" | \
+      grep -v "Waitlisted" > $NAMES
+else  
+  echo "Using pre-built $NAMES..."
+  if [ ! -f $NAMES ] ; then
+    echo "Error!  '$NAMES' not found"
+    exit 1
+  fi
+fi
+echo -n "--> total names: " 
+wc -l $NAMES | awk '{print $1}'
 
 # Add markdown header to markdown file.
 echo "Preparing markdown file..."
@@ -169,7 +188,7 @@ convert -size 150x150 xc:white white.png
 echo "Making name + pic for each student: "
 i=0
 col=1
-WARNING=0
+MISSING=0
 array=()
 while IFS= read -r name; do
 
@@ -182,7 +201,7 @@ while IFS= read -r name; do
   image=$IMG-`seq -f "%03g" $i $i`.png
   if [ ! -f "$image" ]; then
     image="(No image)"
-    WARNING=$((WARNING+1))
+    MISSING=$((MISSING+1))
   else
 
     # If width is not 150px then pad with white image.
@@ -231,8 +250,20 @@ fi
 # Run pandoc to format markdown to PDF.
 echo "Running pandoc..."
 pandoc --standalone --self-contained -V fontsize=12pt -V geometry:"margin=1in" -o $OUT $MD
+if [ ! $? -eq 0 ]; then
+  echo "WARNING! pandoc error."
+  exit 1
+fi
 
 echo "OUTPUT: $OUT"
-if [ "$WARNING" -gt 0 ] ; then
-  echo "WARNING!  Missing $WARNING image(s).  Names may be off."
+
+# Exit with proper warning code for any calling scripts.
+if [ "$MISSING" -gt 0 ] ; then
+  echo "WARNING!  Missing $MISSING image(s).  Names may be off."
+  exit 1    
+else
+  exit 0
 fi  
+
+
+
