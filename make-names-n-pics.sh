@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v2.2
+VERSION=v2.3
 MD=names-n-pics.md
 OUT=names-n-pics.pdf
 NAMES=names.txt
@@ -169,6 +169,7 @@ convert -size 150x150 xc:white white.png
 echo "Making name + pic for each student: "
 i=0
 col=1
+WARNING=0
 array=()
 while IFS= read -r name; do
 
@@ -181,7 +182,7 @@ while IFS= read -r name; do
   image=$IMG-`seq -f "%03g" $i $i`.png
   if [ ! -f "$image" ]; then
     image="(No image)"
-
+    WARNING=$((WARNING+1))
   else
 
     # If width is not 150px then pad with white image.
@@ -232,4 +233,6 @@ echo "Running pandoc..."
 pandoc --standalone --self-contained -V fontsize=12pt -V geometry:"margin=1in" -o $OUT $MD
 
 echo "OUTPUT: $OUT"
-
+if [ "$WARNING" -gt 0 ] ; then
+  echo "WARNING!  Missing $WARNING image(s).  Names may be off."
+fi  

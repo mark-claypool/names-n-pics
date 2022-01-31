@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v2.2
+v2.3
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
@@ -84,6 +84,10 @@ To remove everything, including final PDF type:
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
 More testing and probably better error handling.
+
+If a "roster.pdf" is missing a picture for a student, this will throw
+all the following name-pic matches off.  When this happens, the script
+throws a warning but it would be better to have it fixed.
 
 ----------------------
 
