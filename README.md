@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v2.4
+v3.0
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
@@ -79,22 +79,21 @@ To remove everything, including final PDF type:
 
 ----------------------
 
+## Special cases handled
+
+Missing images replaced with anonymous silhouette.
+
+Narrow/wide images resized or padded, as needed, and centered.
+
+Students on the waitlist included, listed after others.
+
+----------------------
+
 ## To Do
 
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
-More testing and probably better error handling.
-
-If a "roster.pdf" is missing a picture for a student, this will throw
-all the following name-pic matches off.  When this happens, the script
-throws a warning but it would be better to have it fixed. As part of
-a fix, the students without a photo can be enumerated with:
-
-`grep -i '@wpi.edu' temp.csv | cat -n | grep -v 'Photo'`
-
-Then, the images should be able to be "scooted" up: `mv image-085.png
-image-086.png`, `mv image-084.png image-085.png` ...  An "empty" image
-can be used for any that are missing.
+Perhaps more testing and probably better error handling.
 
 ----------------------
 

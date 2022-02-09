@@ -18,11 +18,12 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v2.4
+VERSION=v3.0
 MD=names-n-pics.md
 OUT=names-n-pics.pdf
 NAMES=names.txt
 IMG=image
+PIC=pic
 ROSTER=roster
 CSV=temp.csv
 MAX_COLS=3
@@ -163,8 +164,34 @@ else
     exit 1
   fi
 fi
-echo -n "--> total names: " 
-wc -l $NAMES | awk '{print $1}'
+count=`wc -l $NAMES | awk '{print $1}'`
+echo -n "--> total names: "
+echo $count
+
+# Enumerate images.
+missing_count=0
+for (( i=1; i<=$count; i++ )); do
+  has_photo=`grep -i '@wpi.edu' $CSV | cat -n | awk "NR==$i" | grep 'Photo' | wc -l`
+
+  # Use a silhouette as the pic for each missing image.
+  if [ "$has_photo" == "0" ]; then
+    missing_count=$((missing_count+1))
+    image="anonymous-png"
+    idx=$(($i-1))
+    pic=$PIC-`seq -f "%03g" $idx $idx`.png
+  fi
+
+  # Otherwise, copy image as the pic.
+  if [ "$has_photo" == "1" ]; then
+    old_idx=$(($i-$missing_count-1))
+    image=$IMG-`seq -f "%03g" $old_idx $old_idx`.png      
+    idx=$(($i-1))
+    pic=$PIC-`seq -f "%03g" $idx $idx`.png
+  fi
+
+  cp $image $pic
+
+done
 
 # Add markdown header to markdown file.
 echo "Preparing markdown file..."
@@ -198,24 +225,24 @@ while IFS= read -r name; do
   array+=( "$name" )
   
   # Get next image in sequence.
-  image=$IMG-`seq -f "%03g" $i $i`.png
-  if [ ! -f "$image" ]; then
-    image="(No image)"
+  pic=$PIC-`seq -f "%03g" $i $i`.png
+  if [ ! -f "$pic" ]; then
+    pic="(No pic)"
     MISSING=$((MISSING+1))
   else
 
     # If width is not 150px then pad with white image.
-    width=`file $image | awk '{print $5}'`
+    width=`file $pic | awk '{print $5}'`
     if (( $width < 150 )); then
       offset=$(((150 - $width) / 2))
-      convert white.png $image -geometry +$offset+0 -composite temp.png
-      mv temp.png $image
+      convert white.png $pic -geometry +$offset+0 -composite temp.png
+      mv temp.png $pic
     fi
 
   fi
 
   # Add to file.
-  echo "![$name]($image){ width=300px }" >> $MD
+  echo "![$name]($pic){ width=300px }" >> $MD
 
   # If done with row, add captions.
   if [ "$col" == "$MAX_COLS" ]; then
