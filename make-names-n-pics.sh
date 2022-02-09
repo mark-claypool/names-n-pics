@@ -145,7 +145,7 @@ xlsx2csv $ROSTER.xlsx > $CSV
 # Extract names.
 if [ "$NONAMES" == "0" ] ; then
   echo "Extracting names..."
-  start=`grep -Tn "Email Address" temp.csv | sed s/:/\/g | awk '{print $1}' | head -n 1`
+  start=`grep -Tn "Email Address" $CSV | sed s/:/\/g | awk '{print $1}' | head -n 1`
   start=$((start+1))
   tail -n +$start $CSV | \
       grep -v "Waitlisted Students" | \
@@ -177,7 +177,7 @@ echo "---" >> $MD
 echo " " >> $MD
 
 # Get class header and write to markdown file.
-header=`grep "Course Section" temp.csv | awk -F',' '{print $2}' | tr -d '\n'`
+header=`grep "Course Section" $CSV | awk -F',' '{print $2}' | tr -d '\n'`
 echo "## $header" >> $MD
 echo " " >> $MD
 

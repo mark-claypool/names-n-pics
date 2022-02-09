@@ -87,7 +87,14 @@ More testing and probably better error handling.
 
 If a "roster.pdf" is missing a picture for a student, this will throw
 all the following name-pic matches off.  When this happens, the script
-throws a warning but it would be better to have it fixed.
+throws a warning but it would be better to have it fixed. As part of
+a fix, the students without a photo can be enumerated with:
+
+`grep -i '@wpi.edu' temp.csv | cat -n | grep -v 'Photo'`
+
+Then, the images should be able to be "scooted" up: `mv image-085.png
+image-086.png`, `mv image-084.png image-085.png` ...  An "empty" image
+can be used for any that are missing.
 
 ----------------------
 

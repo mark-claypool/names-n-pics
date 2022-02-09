@@ -10,6 +10,7 @@ all: roster.xlsx roster.pdf
 clean:
 	$(RM) -f *.png
 	$(RM) -f roster.csv
+	$(RM) -f temp.csv
 	$(RM) -f names.txt
 	$(RM) -f names-n-pics.md 
 
