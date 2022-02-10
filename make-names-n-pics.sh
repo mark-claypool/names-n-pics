@@ -19,15 +19,20 @@
 # + convert (ImageMagick)
 
 VERSION=v3.0
+
+# For layout
+SIZE=150  # in pixels
+MAX_COLS=3
+
+# For file names
 MD=names-n-pics.md
 OUT=names-n-pics.pdf
-NAMES=names.txt
 IMG=image
 PIC=pic
 ROSTER=roster
 CSV=temp.csv
-MAX_COLS=3
-NONAMES=0
+NAMES=names.txt
+NONAMES=0 # 0 - generate file 'names.txt', 1 - reuse
 
 #####################################
 # usage - print usage message and quit.
@@ -36,15 +41,19 @@ function usage() {
   echo "  usage: make-names-n-pics.sh [-hdn]"
   echo "         -n  do not generate names, but use pre-built '$NAMES'"
   echo "         -d  turn on debug (default off)"
+  echo "         -v  print version"
   echo "         -h  this help message"
   exit 1
 }
 
 #######################################
 # parse command line args.
-while getopts "dhn?" opt; do
+while getopts "vdhn?" opt; do
   case "${opt}" in
     n)  NONAMES=1
+	;;
+    v)  echo "Version $VERSION"
+	usage
 	;;
     d)  set -x
 	;;
@@ -56,30 +65,30 @@ done
 shift $((OPTIND-1))
 
 if [ ! "$#" == "0" ] ; then
-  echo "Error!  No command line arguements needed."
+  echo "Error!  No command line arguments needed (or allowed)."
   usage
 fi
 
 #####################################
 # Check for needed utility programs.
 if ! command -v xlsx2csv &> /dev/null ; then
-  echo "Error!  Requires 'xlsx2csv'"
+  echo "Error!  Requires 'xlsx2csv'."
   exit
 fi
 if ! command -v convert &> /dev/null ; then
-  echo "Error!  Requires 'convert'"
+  echo "Error!  Requires 'convert'."
   exit
 fi
 if ! command -v xlsx2csv &> /dev/null ; then
-  echo "Error!  Requires ' xlsx2csv'"
+  echo "Error!  Requires ' xlsx2csv'."
   exit
 fi
 if ! command -v pandoc &> /dev/null ; then
-  echo "Error!  Requires 'pandoc'"
+  echo "Error!  Requires 'pandoc'."
   exit
 fi
 if ! command -v latex &> /dev/null ; then
-  echo "Error!  Requires 'latex'"
+  echo "Error!  Requires 'latex'."
   exit
 fi
 kpsewhich caption.sty >& /dev/null  # kpsewhich should come with latex
@@ -89,7 +98,7 @@ if [ ! $? -eq 0 ]; then
 fi
 kpsewhich subcaption.sty >& /dev/null
 if [ ! $? -eq 0 ]; then
-  echo "Error!  Requires 'subcaption.sty'"
+  echo "Error!  Requires 'subcaption.sty'."
   exit    
 fi
 
@@ -168,7 +177,8 @@ count=`wc -l $NAMES | awk '{print $1}'`
 echo -n "--> total names: "
 echo $count
 
-# Enumerate images.
+# Enumerate extracted images --> pics.
+echo "Enumerating pics from images..."
 missing_count=0
 for (( i=1; i<=$count; i++ )); do
   has_photo=`grep -i '@wpi.edu' $CSV | cat -n | awk "NR==$i" | grep 'Photo' | wc -l`
@@ -181,7 +191,7 @@ for (( i=1; i<=$count; i++ )); do
     pic=$PIC-`seq -f "%03g" $idx $idx`.png
   fi
 
-  # Otherwise, copy image as the pic.
+  # Otherwise, copy extracted image as the pic.
   if [ "$has_photo" == "1" ]; then
     old_idx=$(($i-$missing_count-1))
     image=$IMG-`seq -f "%03g" $old_idx $old_idx`.png      
@@ -209,7 +219,7 @@ echo "## $header" >> $MD
 echo " " >> $MD
 
 # Make white image for padding (as needed for narrow photos).
-convert -size 150x150 xc:white white.png
+convert -size $SIZEx$SIZE xc:white white.png
 
 # Loop through each name, adding name and image to markdown file.
 echo "Making name + pic for each student: "
@@ -233,8 +243,8 @@ while IFS= read -r name; do
 
     # If width is not 150px then pad with white image.
     width=`file $pic | awk '{print $5}'`
-    if (( $width < 150 )); then
-      offset=$(((150 - $width) / 2))
+    if (( $width < $SIZE )); then
+      offset=$((($SIZE - $width) / 2))
       convert white.png $pic -geometry +$offset+0 -composite temp.png
       mv temp.png $pic
     fi
@@ -262,6 +272,7 @@ while IFS= read -r name; do
   col=$((col+1))
   
 done < "$NAMES"
+echo " "
 
 # Handle any remaining uncaptioned photos.
 if [ ! "$col" == "1" ] ; then

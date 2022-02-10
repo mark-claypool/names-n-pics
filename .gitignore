@@ -2,18 +2,18 @@
 # Gitignore
 #
 
-# Ignore general text files
+# Ignore general text files.
 *.doc
 *.docx
 *.xlsx
 *.log
 *.rtf
 
-# Ignore generated/temporary files
+# Ignore specific generated/temporary files.
 roster.pdf
-roster.txt
-name-pic.md
-name-pic.pdf
+roster.xlsx
+names-n-pics.md
+names-n-pics.pdf
 names.txt
+temp.csv
 *.png
-
