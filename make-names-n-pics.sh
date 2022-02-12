@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.0
+VERSION=v3.1
 
 # For layout
 SIZE=150  # in pixels
@@ -73,33 +73,33 @@ fi
 # Check for needed utility programs.
 if ! command -v xlsx2csv &> /dev/null ; then
   echo "Error!  Requires 'xlsx2csv'."
-  exit
+  exit 1
 fi
 if ! command -v convert &> /dev/null ; then
   echo "Error!  Requires 'convert'."
-  exit
+  exit 1
 fi
 if ! command -v xlsx2csv &> /dev/null ; then
   echo "Error!  Requires ' xlsx2csv'."
-  exit
+  exit 1
 fi
 if ! command -v pandoc &> /dev/null ; then
   echo "Error!  Requires 'pandoc'."
-  exit
+  exit 1
 fi
 if ! command -v latex &> /dev/null ; then
   echo "Error!  Requires 'latex'."
-  exit
+  exit 1
 fi
 kpsewhich caption.sty >& /dev/null  # kpsewhich should come with latex
 if [ ! $? -eq 0 ]; then
   echo "Error!  Requires 'caption.sty'"
-  exit    
+  exit 1  
 fi
 kpsewhich subcaption.sty >& /dev/null
 if [ ! $? -eq 0 ]; then
   echo "Error!  Requires 'subcaption.sty'."
-  exit    
+  exit 1  
 fi
 
 #####################################
@@ -205,6 +205,7 @@ done
 
 # Add markdown header to markdown file.
 echo "Preparing markdown file..."
+/bin/rm -f $MD &> /dev/null
 echo "---" >> $MD
 echo "header-includes: |" >> $MD
 echo "    \usepackage{caption}" >> $MD
@@ -214,12 +215,21 @@ echo "---" >> $MD
 echo " " >> $MD
 
 # Get class header and write to markdown file.
-header=`grep "Course Section" $CSV | awk -F',' '{print $2}' | tr -d '\n'`
+header=`grep "WPI.EDU" temp.csv | awk -F',' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
+if [ "$header" == "" ] ; then
+  echo "  Header not found. Trying alternate...."
+  header=`grep "Course Section" $CSV | awk -F',' '{print $2}' | tr -d '\n'`
+fi
+if [ "$header" == "" ] ; then
+  echo "  No classlist suitable header found."
+  header="Names and Pictures"
+fi
+echo "  Header: '$header'"
 echo "## $header" >> $MD
 echo " " >> $MD
 
 # Make white image for padding (as needed for narrow photos).
-convert -size $SIZEx$SIZE xc:white white.png
+convert -size "$SIZE"x"$SIZE" xc:white white.png
 
 # Loop through each name, adding name and image to markdown file.
 echo "Making name + pic for each student: "
