@@ -87,6 +87,10 @@ if ! command -v pandoc &> /dev/null ; then
   echo "Error!  Requires 'pandoc'."
   exit 1
 fi
+if ! command -v csvformat &> /dev/null ; then
+  echo "Error!  Requires 'csvformat'."
+  exit 1
+fi
 if ! command -v latex &> /dev/null ; then
   echo "Error!  Requires 'latex'."
   exit 1
@@ -152,9 +156,9 @@ fi
 echo "Extracting images..."
 pdfimages -png $ROSTER.pdf $IMG
 
-# Convert xlsx to csv.
-echo "Converting xlsx to csv..."
-xlsx2csv $ROSTER.xlsx > $CSV
+# Convert xlsx to tab-separated csv.
+echo "Converting xlsx to tab-separated csv..."
+xlsx2csv $ROSTER.xlsx | csvformat -T > $CSV
 
 # Extract names.
 if [ "$NONAMES" == "0" ] ; then
@@ -164,12 +168,16 @@ if [ "$NONAMES" == "0" ] ; then
   tail -n +$start $CSV | \
       grep -v "Waitlisted Students" | \
       grep -v "Email Address" | \
-      awk -F ',' '{print $2}' | \
+      awk -F '\t' '{print $2}' | \
       grep -v '^[[:blank:]]*$' | \
-      sed s/,/\/g | \
       sed s/\"/\/g | \
+      awk -F',' '{print $2, $1}' | \
       grep -v "Registered" | \
       grep -v "Waitlisted" > $NAMES
+
+  # If names have comma, assume lname, fname and flip.
+  #cat $NAMES |  awk -F',' '{print $1, $2}'
+  
 else  
   echo "Using pre-built $NAMES..."
   if [ ! -f $NAMES ] ; then
@@ -219,10 +227,10 @@ echo "---" >> $MD
 echo " " >> $MD
 
 # Get class header and write to markdown file.
-header=`grep "WPI.EDU" temp.csv | awk -F',' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
+header=`grep "WPI.EDU" temp.csv | awk -F '\t' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
 if [ "$header" == "" ] ; then
   echo "  Header not found. Trying alternate...."
-  header=`grep "Course Section" $CSV | awk -F',' '{print $2}' | tr -d '\n'`
+  header=`grep "Course Section" $CSV | awk -F '\t' '{print $2}' | tr -d '\n'`
 fi
 if [ "$header" == "" ] ; then
   echo "  No classlist suitable header found."

@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v3.0
+v3.2
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
@@ -32,9 +32,14 @@ needed:
 
 ```
 sudo apt update
-sudo apt install pandoc xlsx2csv \
-  latex texlive-latex-recommended \
-  Imagemagick poppler-utils
+sudo apt install \
+  pandoc \
+  xlsx2csv \
+  latex \
+  texlive-latex-recommended \
+  Imagemagick \
+  poppler-utils \
+  csvkit
 
 ```
 
