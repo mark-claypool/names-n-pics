@@ -29,6 +29,15 @@ Following these instructions requires the tools:
 
 It's been tested on Linux (Ubuntu).
 
+Tip: on Linux Unbutu, the following commands will install everything
+needed:
+
+```
+sudo apt update
+sudo apt install pandoc xlsx2csv latex texlive-latex-recommended Imagemagick
+
+```
+
 ----------------------
 
 ## Instructions
