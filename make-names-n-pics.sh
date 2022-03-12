@@ -91,6 +91,10 @@ if ! command -v latex &> /dev/null ; then
   echo "Error!  Requires 'latex'."
   exit 1
 fi
+if ! command -v pdfimages &> /dev/null ; then
+  echo "Error!  Requires 'pdfimages'."
+  exit 1
+fi
 kpsewhich caption.sty >& /dev/null  # kpsewhich should come with latex
 if [ ! $? -eq 0 ]; then
   echo "Error!  Requires 'caption.sty'"
