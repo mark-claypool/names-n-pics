@@ -18,14 +18,12 @@ Following these instructions requires the tools:
 
 - Workday (to get the classlist, PDF and Excel)
 - pdfimages (to extract the images from the PDF)
-    + (On Linux: `apt install poppler-utils`)
 - bash (to run the script)
 - xlsx2csv (to convert the Excel file to csv)
 - Latex caption package (for aligning figures, 3 per row)
 - Latex subcaption package (for centering names on figures)
 - convert (from ImageMagick, for padding figures that are narrow)
 - pandoc (for converting markdown to PDF)
-    + (On Linux: `apt install pandoc`).
 
 It's been tested on Linux (Ubuntu).
 
@@ -34,7 +32,9 @@ needed:
 
 ```
 sudo apt update
-sudo apt install pandoc xlsx2csv latex texlive-latex-recommended Imagemagick
+sudo apt install pandoc xlsx2csv \
+  latex texlive-latex-recommended \
+  Imagemagick poppler-utils
 
 ```
 
