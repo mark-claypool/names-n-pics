@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.1
+VERSION=v3.2
 
 # For layout
 SIZE=150  # in pixels
@@ -164,7 +164,7 @@ if [ "$NONAMES" == "0" ] ; then
   tail -n +$start $CSV | \
       grep -v "Waitlisted Students" | \
       grep -v "Email Address" | \
-      awk -F ',' '{print $3, $2}' | \
+      awk -F ',' '{print $2}' | \
       grep -v '^[[:blank:]]*$' | \
       sed s/,/\/g | \
       sed s/\"/\/g | \
@@ -266,7 +266,7 @@ while IFS= read -r name; do
   fi
 
   # Add to file.
-  echo "![$name]($pic){ width=300px }" >> $MD
+  echo "![$name]($pic){ width=200px }" >> $MD
 
   # If done with row, add captions.
   if [ "$col" == "$MAX_COLS" ]; then
