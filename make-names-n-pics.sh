@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.2
+VERSION=v3.3
 
 # For layout
 SIZE=150  # in pixels
@@ -77,10 +77,6 @@ if ! command -v xlsx2csv &> /dev/null ; then
 fi
 if ! command -v convert &> /dev/null ; then
   echo "Error!  Requires 'convert'."
-  exit 1
-fi
-if ! command -v xlsx2csv &> /dev/null ; then
-  echo "Error!  Requires ' xlsx2csv'."
   exit 1
 fi
 if ! command -v pandoc &> /dev/null ; then
@@ -175,9 +171,6 @@ if [ "$NONAMES" == "0" ] ; then
       grep -v "Registered" | \
       grep -v "Waitlisted" > $NAMES
 
-  # If names have comma, assume lname, fname and flip.
-  #cat $NAMES |  awk -F',' '{print $1, $2}'
-  
 else  
   echo "Using pre-built $NAMES..."
   if [ ! -f $NAMES ] ; then

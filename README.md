@@ -14,20 +14,18 @@ script extracts each photo to a decent size and includes it with just
 a name.  This may be useful for, say, learning the names of students
 in a class.
 
-Following these instructions requires the tools:
+Besides needing Workday to get the classlist (PDF and Excel), the
+following tools are required:
 
-- Workday (to get the classlist, PDF and Excel)
 - pdfimages (to extract the images from the PDF)
-- bash (to run the script)
 - xlsx2csv (to convert the Excel file to csv)
+- csvformat (to convert csv to tsv)
 - Latex caption package (for aligning figures, 3 per row)
 - Latex subcaption package (for centering names on figures)
 - convert (from ImageMagick, for padding figures that are narrow)
 - pandoc (for converting markdown to PDF)
 
-It's been tested on Linux (Ubuntu).
-
-Tip: on Linux Unbutu, the following commands will install everything
+Tip: for Linux Ubuntu, the following commands will install everything
 needed:
 
 ```
@@ -42,6 +40,8 @@ sudo apt install \
   csvkit
 
 ```
+
+It's been tested on Linux (Ubuntu).
 
 ----------------------
 
@@ -101,13 +101,13 @@ Narrow/wide images resized or padded, as needed, and centered.
 
 Students on the waitlist included, listed after others.
 
+Classlists with "lastname, firstname" as well as "firstname lastname".
+
 ----------------------
 
 ## To Do
 
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
-
-Perhaps more testing and probably better error handling.
 
 ----------------------
 
@@ -115,4 +115,3 @@ Enjoy!
 
 -- Mark Claypool  
 claypool@cs.wpi.edu
-
