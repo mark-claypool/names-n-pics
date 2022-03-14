@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.5
+VERSION=v3.6
 
 # For layout
 SIZE=150  # in pixels
@@ -231,6 +231,10 @@ echo " " >> $MD
 
 # Get class header and write to markdown file.
 header=`grep "WPI.EDU" temp.csv | awk -F '\t' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
+if grep -q ".jpg" <<< $header; then
+  echo "  Header odd.  Suggests incorrect format. Aborting."
+  exit 1
+fi
 if [ "$header" == "" ] ; then
   echo "  Header not found. Trying alternate...."
   header=`grep "Course Section" $CSV | awk -F '\t' '{print $2}' | tr -d '\n'`
