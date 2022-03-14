@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.4
+VERSION=v3.5
 
 # For layout
 SIZE=150  # in pixels
@@ -299,14 +299,14 @@ while IFS= read -r name; do
 done < "$NAMES"
 echo " "
 
-# Handle any remaining uncaptioned photos.
+# Handle any remaining uncaptioned photos/empty spaces.
 if [ ! "$col" == "1" ] ; then
   for  (( j=0; j<$col; j++ )); do
     caption "${array[$j]}" $j
   done
-  if [ ! "$j" == "$col" ]; then
-    echo "\end{figure}" >> $MD
-  fi
+  for  (( i=j; i<$MAX_COLS; i++ )); do
+    caption "" $i
+  done
   echo " "
 fi
 
