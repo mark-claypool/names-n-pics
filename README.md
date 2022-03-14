@@ -109,6 +109,8 @@ Classlists with "lastname, firstname" as well as "firstname lastname".
 
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
+Some pictures still scale incorrectly.
+
 ----------------------
 
 Enjoy!
