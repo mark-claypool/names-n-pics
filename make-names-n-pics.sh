@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.3
+VERSION=v3.4
 
 # For layout
 SIZE=150  # in pixels
@@ -138,6 +138,16 @@ function caption() {
 }
 
 #####################################
+
+# Check for needed roster xlsx and pdf.
+if [ ! -f $ROSTER.xlsx ]; then
+  echo "Error! File '$ROSTER.xlsx' does not exist. Should be exported from Workday."
+  exit 1
+fi
+if [ ! -f $ROSTER.pdf ]; then
+  echo "Error! File '$ROSTER.pdf' does not exist. Should be exported from Workday."
+  exit 1
+fi
 
 # Clean up any old files.
 echo "Cleaning up old files..."
