@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.7
+VERSION=v3.6
 
 # For layout
 SIZE=150  # in pixels
@@ -107,6 +107,39 @@ if [ ! $? -eq 0 ]; then
 fi
 
 #####################################
+# is-white - compute colors in a file.  If "white", will only be 1.
+# Otherwise, will be something else (-1).
+#
+# $1 - file name.
+# 
+# for one color (e.g., white), the command:
+#   identify --verbose
+#
+# will have
+# ...
+# Histogram:
+#     22500: (255,255,255) #FFFFFF gray(255)
+# Colormap entries: 256
+# ...
+# usage: colors=$(count-colors "$file")
+function is-white() {
+  local file=$1
+
+  first=`identify -verbose "$file" | \
+    grep -n "Histogram:" | \
+    sed s/:/\/g | \
+    awk '{print $1}' | head -n 1`
+  first=$((first+1))
+  last=`identify -verbose $file | \
+    grep -n 'Colormap entries:' | \
+    sed s/:/\/g | \
+    awk '{print $1}' | \
+    head -n 1`
+  diff=$((last-first))
+  echo "$diff"
+}
+
+#####################################
 # Add one caption.
 # $1 - student name
 # $2 - column number
@@ -154,6 +187,8 @@ echo "Cleaning up old files..."
 /bin/rm -f $OUT
 /bin/rm -f $MD
 /bin/rm -f $CSV
+/bin/rm -f $IMG*.png
+/bin/rm -f $PIC*.png
 if [ "$NONAMES" == "0" ] ; then
   /bin/rm -f $NAMES
 fi
@@ -161,6 +196,27 @@ fi
 # Extract images.
 echo "Extracting images..."
 pdfimages -png $ROSTER.pdf $IMG
+
+# Check for white images (these appear mysteriously in some roster.pdf
+# files and do not correspond to any students).  
+image_count=`ls -1 $IMG*.png | wc -l`
+for (( i=0; i<$image_count; i++ )); do
+  img=$IMG-`seq -f "%03g" $i $i`.png
+  white=$(is-white "$img")
+
+  # If found, remove and "scoot" remaining.
+  if [ $white == "1" ] ; then
+    echo "Found 'white' image ($img).  Scooting over..."
+    next=$((i+1))
+    for (( j=$next; j<$image_count; j++ )); do
+      prev=$((j-1))
+      img1=$IMG-`seq -f "%03g" $prev $prev`.png
+      img2=$IMG-`seq -f "%03g" $j $j`.png
+      mv $img2 $img1
+    done
+    image_count=$((image_count-1))
+  fi
+done
 
 # Convert xlsx to tab-separated csv.
 echo "Converting xlsx to tab-separated csv..."
@@ -172,6 +228,7 @@ if [ "$NONAMES" == "0" ] ; then
   start=`grep -Tn "Email Address" $CSV | sed s/:/\/g | awk '{print $1}' | head -n 1`
   start=$((start+1))
   tail -n +$start $CSV | \
+      grep '@' | \
       grep -v "Waitlisted Students" | \
       grep -v "Email Address" | \
       awk -F '\t' '{print $2}' | \
@@ -188,18 +245,19 @@ else
     exit 1
   fi
 fi
-count=`wc -l $NAMES | awk '{print $1}'`
+name_count=`wc -l $NAMES | awk '{print $1}'`
 echo -n "--> total names: "
-echo $count
+echo $name_count
 
 # Enumerate extracted images --> pics.
 echo "Enumerating pics from images..."
 missing_count=0
-for (( i=1; i<=$count; i++ )); do
+for (( i=1; i<=$name_count; i++ )); do
   has_photo=`grep -i '@wpi.edu' $CSV | cat -n | awk "NR==$i" | grep 'Photo' | wc -l`
 
   # Use a silhouette as the pic for each missing image.
   if [ "$has_photo" == "0" ]; then
+    echo "Missing photo for name $i.  Using anonymous..."
     missing_count=$((missing_count+1))
     image="anonymous-png"
     idx=$(($i-1))
@@ -217,6 +275,13 @@ for (( i=1; i<=$count; i++ )); do
   cp $image $pic
 
 done
+
+# Compare final image count to name count.  They should be the same.
+final_image_count=`ls -1 $PIC*.png | wc -l`
+if [ ! "$final_image_count" == "$name_count" ] ; then
+  echo "WARNING! # names ($name_count) != # images ($image_count)"
+  exit 1
+fi
 
 # Add markdown header to markdown file.
 echo "Preparing markdown file..."
