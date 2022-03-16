@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.6
+VERSION=v3.7
 
 # For layout
 SIZE=150  # in pixels
