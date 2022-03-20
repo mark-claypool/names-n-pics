@@ -8,7 +8,7 @@
 #
 # See: https://github.com/mark-claypool/names-n-pics
 #
-# Last signficantly modified: January 2022
+# Last signficantly modified: March 2022
 #
 
 # Required supporting programs:
@@ -18,7 +18,7 @@
 # + pandoc
 # + convert (ImageMagick)
 
-VERSION=v3.6
+VERSION=v3.8
 
 # For layout
 SIZE=150  # in pixels
@@ -30,8 +30,9 @@ OUT=names-n-pics.pdf
 IMG=image
 PIC=pic
 ROSTER=roster
-CSV=temp.csv
+TSV=temp.tsv
 NAMES=names.txt
+PRONOUNS=pronouns.txt
 NONAMES=0 # 0 - generate file 'names.txt', 1 - reuse
 
 #####################################
@@ -186,20 +187,27 @@ fi
 echo "Cleaning up old files..."
 /bin/rm -f $OUT
 /bin/rm -f $MD
-/bin/rm -f $CSV
+/bin/rm -f $TSV
 /bin/rm -f $IMG*.png
 /bin/rm -f $PIC*.png
 if [ "$NONAMES" == "0" ] ; then
   /bin/rm -f $NAMES
+  /bin/rm -f $PRONOUNS
 fi
 
 # Extract images.
 echo "Extracting images..."
 pdfimages -png $ROSTER.pdf $IMG
+image_count=`ls -1 $IMG*.png | wc -l`
+
+# Error check here since there could have been an incorrect roster.
+if [ "$image_count" == "0" ] ; then
+  echo "Error!  No images found in $ROSTER.pdf."
+  exit 2
+fi
 
 # Check for white images (these appear mysteriously in some roster.pdf
 # files and do not correspond to any students).  
-image_count=`ls -1 $IMG*.png | wc -l`
 for (( i=0; i<$image_count; i++ )); do
   img=$IMG-`seq -f "%03g" $i $i`.png
   white=$(is-white "$img")
@@ -218,32 +226,63 @@ for (( i=0; i<$image_count; i++ )); do
   fi
 done
 
-# Convert xlsx to tab-separated csv.
-echo "Converting xlsx to tab-separated csv..."
-xlsx2csv $ROSTER.xlsx | csvformat -T > $CSV
+# Convert xlsx to tab-separated tsv.
+echo "Converting xlsx to tab-separated tsv..."
+xlsx2csv -e $ROSTER.xlsx | csvformat -T > $TSV
 
 # Extract names.
 if [ "$NONAMES" == "0" ] ; then
+
   echo "Extracting names..."
-  start=`grep -Tn "Email Address" $CSV | sed s/:/\/g | awk '{print $1}' | head -n 1`
+
+  start=`grep -Tn "Email" $TSV | sed s/:/\/g | awk '{print $1}' | head -n 1`
+
+  # There seem to be two types of formats:
+  # A) Photo, Student, Pronoun...
+  # B) Reg, Student, Photo...
+  echo "Examining header to determine column format..."
+  col1=`sed -n "$start"p $TSV | awk -F '\t' '{print $1}'`
+  if [ "$col1" == "Photo" ] ; then
+    format="ALTERNATE"
+  else
+    format="standard"
+  fi
+  echo "Format: $format"
   start=$((start+1))
-  tail -n +$start $CSV | \
+
+  if [ "$format" == "standard" ] ; then
+    # Standard format.
+    tail -n +$start $TSV | \
       grep '@' | \
-      grep -v "Waitlisted Students" | \
-      grep -v "Email Address" | \
-      awk -F '\t' '{print $2}' | \
       grep -v '^[[:blank:]]*$' | \
+      awk -F '\t' '{print $2}' | \
       sed s/\"/\/g | \
       awk -F',' '{print $2, $1}' | \
       grep -v "Registered" | \
       grep -v "Waitlisted" > $NAMES
+  else
+    # Alternate format.
+    tail -n +$start $TSV | \
+      grep '@' | \
+      grep 'jpg\|jpeg' | \
+      awk -F '\t' '{print $2}' | \
+      grep -v '^[[:blank:]]*$' > $NAMES
+    
+    # pronouns
+    tail -n +$start $TSV | \
+      grep '@' | \
+      awk -F '\t' '{print $3}' > $PRONOUNS
 
+  fi
+  
 else  
+
   echo "Using pre-built $NAMES..."
   if [ ! -f $NAMES ] ; then
     echo "Error!  '$NAMES' not found"
     exit 1
   fi
+
 fi
 name_count=`wc -l $NAMES | awk '{print $1}'`
 echo -n "--> total names: "
@@ -253,7 +292,12 @@ echo $name_count
 echo "Enumerating pics from images..."
 missing_count=0
 for (( i=1; i<=$name_count; i++ )); do
-  has_photo=`grep -i '@wpi.edu' $CSV | cat -n | awk "NR==$i" | grep 'Photo' | wc -l`
+
+  if [ "$format" == "standard" ] ; then
+    has_photo=`grep -i '@wpi.edu' $TSV | cat -n | awk "NR==$i" | grep 'Photo' | wc -l`
+  else
+    has_photo=`grep -i '@wpi.edu' $TSV | cat -n | awk "NR==$i" | awk -F'\t' '{print $2}' | grep 'jpg\|jpeg' | wc -l`
+  fi
 
   # Use a silhouette as the pic for each missing image.
   if [ "$has_photo" == "0" ]; then
@@ -295,14 +339,17 @@ echo "---" >> $MD
 echo " " >> $MD
 
 # Get class header and write to markdown file.
-header=`grep "WPI.EDU" temp.csv | awk -F '\t' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
-if grep -q ".jpg" <<< $header; then
-  echo "  Header odd.  Suggests incorrect format. Aborting."
-  exit 1
-fi
-if [ "$header" == "" ] ; then
-  echo "  Header not found. Trying alternate...."
-  header=`grep "Course Section" $CSV | awk -F '\t' '{print $2}' | tr -d '\n'`
+
+if [ "$format" == "standard" ] ; then
+  # Standard format header.
+  header=`grep "WPI.EDU" $TSV | awk -F '\t' '{print $1}' | head -n 1 | tr -d '\n' | awk -F' - ' '{print $(NF-1), "-", $(NF)}'`
+  if [ "$header" == "" ] ; then
+    echo "  Header not found. Trying alternate...."
+    header=`grep "Course Section" $TSV | awk -F '\t' '{print $2}' | tr -d '\n'`
+  fi
+else
+  # Alternate format header.
+  header=`grep -i '@wpi.edu' $TSV | awk -F'\t' '{print $18}' | head -n 1 | tr -d '\n'`
 fi
 if [ "$header" == "" ] ; then
   echo "  No classlist suitable header found."
@@ -393,9 +440,11 @@ echo "OUTPUT: $OUT"
 if [ "$MISSING" -gt 0 ] ; then
   echo "WARNING!  Missing $MISSING image(s).  Names may be off."
   exit 1    
-else
-  exit 0
-fi  
+fi
+if [ "$missing_count" -gt 4 ] ; then
+  echo "WARNING!  $missing_count anonymous images.  May be file upload error."
+  exit 1    
+fi
 
-
+exit 0
 

@@ -2,7 +2,7 @@
 
 ## Names and Pictures
 
-v3.7
+v3.8
 
 These instructions and script are to create a list of students in a
 class with a decent-sized photo for each.
@@ -110,6 +110,10 @@ Classlists with "lastname, firstname" as well as "firstname lastname".
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
 Some pictures still scale incorrectly.
+
+Some students on waitlists may not show in final list.
+
+When Workday has pronouns, add to names.
 
 ----------------------
 

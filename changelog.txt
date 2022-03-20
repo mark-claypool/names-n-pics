@@ -1,0 +1,22 @@
+Changelog
+
+v3.8
+    Support for "alternate" Workday download format
+    Throw warning if inordinate number of anonymous images
+
+Previous versions
+    Handle 'white' image case, name-pic count errors
+    Fixed bug when odd number of pics
+    Added check for roster.pdf and roster.xlsx
+    Clarified requirements
+    Made more robust to lname, fname order
+    Updated name order to new Workday format
+    Updated 'apt install' list for Linux
+    Added 'pdfimages' to startup checks.
+    Improved class header
+    Updated for clarity
+    Handle missing pictures
+    Corrected use of temp.csv
+    Renamed script and added comments
+    Added 'names.txt' to clean list
+    Initial commit
