@@ -322,6 +322,8 @@ done
 
 # Compare final image count to name count.  They should be the same.
 final_image_count=`ls -1 $PIC*.png | wc -l`
+echo -n "--> total images: "
+echo $final_image_count
 if [ ! "$final_image_count" == "$name_count" ] ; then
   echo "WARNING! # names ($name_count) != # images ($image_count)"
   exit 1
