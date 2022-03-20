@@ -103,15 +103,17 @@ Students on the waitlist included, listed after others.
 
 Classlists with "lastname, firstname" as well as "firstname lastname".
 
+Alternate Workday format (there seem to be two, main classlist formats).
+
+Roster PDF lists with odd blank images embedded.
+
 ----------------------
 
 ## To Do
 
 Make options to generate "names-n-pic.html" and "names-n-pic.docx".
 
-Some pictures still scale incorrectly.
-
-Some students on waitlists may not show in final list.
+Some pictures still do not scale optimally.
 
 When Workday has pronouns, add to names.
 
