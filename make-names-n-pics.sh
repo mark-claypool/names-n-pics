@@ -39,7 +39,7 @@ NONAMES=0 # 0 - generate file 'names.txt', 1 - reuse
 # usage - print usage message and quit.
 function usage() {
   echo "make-names-n-pics.sh ($VERSION) - create classlist with pictures"
-  echo "  usage: make-names-n-pics.sh [-hdn]"
+  echo "  usage: make-names-n-pics.sh [-ndvh]"
   echo "         -n  do not generate names, but use pre-built '$NAMES'"
   echo "         -d  turn on debug (default off)"
   echo "         -v  print version"
@@ -449,4 +449,3 @@ if [ "$missing_count" -gt 4 ] ; then
 fi
 
 exit 0
-

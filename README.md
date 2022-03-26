@@ -20,6 +20,7 @@ following tools are required:
 - pdfimages (to extract the images from the PDF)
 - xlsx2csv (to convert the Excel file to csv)
 - csvformat (to convert csv to tsv)
+- Latex (used by pandoc to create PDFs)
 - Latex caption package (for aligning figures, 3 per row)
 - Latex subcaption package (for centering names on figures)
 - convert (from ImageMagick, for padding figures that are narrow)
@@ -41,7 +42,7 @@ sudo apt install \
 
 ```
 
-It's been tested on Linux (Ubuntu).
+It's been tested on Linux Ubuntu.
 
 ----------------------
 
@@ -103,9 +104,9 @@ Students on the waitlist included, listed after others.
 
 Classlists with "lastname, firstname" as well as "firstname lastname".
 
-Alternate Workday format (there seem to be two, main classlist formats).
+Alternate Workday format (there seem to be two, classlist formats provided).
 
-Roster PDF lists with odd blank images embedded.
+Roster PDFs with odd blank images embedded.
 
 ----------------------
 
