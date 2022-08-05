@@ -18,6 +18,12 @@
 # + pandoc
 # + convert (ImageMagick)
 
+# Exit codes:
+# 0 - all is well
+# 1 - warning (maybe input or output odd)
+# 2 - error (likely input error)
+# 3 - error (system or other)
+
 VERSION=v3.8
 
 # For layout
@@ -44,7 +50,7 @@ function usage() {
   echo "         -d  turn on debug (default off)"
   echo "         -v  print version"
   echo "         -h  this help message"
-  exit 1
+  exit 3
 }
 
 #######################################
@@ -74,37 +80,37 @@ fi
 # Check for needed utility programs.
 if ! command -v xlsx2csv &> /dev/null ; then
   echo "Error!  Requires 'xlsx2csv'."
-  exit 1
+  exit 3
 fi
 if ! command -v convert &> /dev/null ; then
   echo "Error!  Requires 'convert'."
-  exit 1
+  exit 3
 fi
 if ! command -v pandoc &> /dev/null ; then
   echo "Error!  Requires 'pandoc'."
-  exit 1
+  exit 3
 fi
 if ! command -v csvformat &> /dev/null ; then
   echo "Error!  Requires 'csvformat'."
-  exit 1
+  exit 3
 fi
 if ! command -v latex &> /dev/null ; then
   echo "Error!  Requires 'latex'."
-  exit 1
+  exit 3
 fi
 if ! command -v pdfimages &> /dev/null ; then
   echo "Error!  Requires 'pdfimages'."
-  exit 1
+  exit 3
 fi
 kpsewhich caption.sty >& /dev/null  # kpsewhich should come with latex
 if [ ! $? -eq 0 ]; then
   echo "Error!  Requires 'caption.sty'"
-  exit 1  
+  exit 3
 fi
 kpsewhich subcaption.sty >& /dev/null
 if [ ! $? -eq 0 ]; then
   echo "Error!  Requires 'subcaption.sty'."
-  exit 1  
+  exit 3  
 fi
 
 #####################################
@@ -176,11 +182,11 @@ function caption() {
 # Check for needed roster xlsx and pdf.
 if [ ! -f $ROSTER.xlsx ]; then
   echo "Error! File '$ROSTER.xlsx' does not exist. Should be exported from Workday."
-  exit 1
+  exit 2
 fi
 if [ ! -f $ROSTER.pdf ]; then
   echo "Error! File '$ROSTER.pdf' does not exist. Should be exported from Workday."
-  exit 1
+  exit 2
 fi
 
 # Clean up any old files.
@@ -280,7 +286,7 @@ else
   echo "Using pre-built $NAMES..."
   if [ ! -f $NAMES ] ; then
     echo "Error!  '$NAMES' not found"
-    exit 1
+    exit 2
   fi
 
 fi
@@ -433,7 +439,7 @@ echo "Running pandoc..."
 pandoc --standalone --self-contained -V fontsize=12pt -V geometry:"margin=1in" -o $OUT $MD
 if [ ! $? -eq 0 ]; then
   echo "WARNING! pandoc error."
-  exit 1
+  exit 2
 fi
 
 echo "OUTPUT: $OUT"
