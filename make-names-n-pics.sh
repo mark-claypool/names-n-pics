@@ -16,7 +16,8 @@
 # + Latex caption package
 # + Latex subcaption package
 # + pandoc
-# + convert (ImageMagick)
+# + convert (in package imagemagick)
+# + csvformat (in package csvkit)
 
 # Exit codes:
 # 0 - all is well
@@ -261,7 +262,7 @@ if [ "$NONAMES" == "0" ] ; then
     tail -n +$start $TSV | \
       grep '@' | \
       grep -v '^[[:blank:]]*$' | \
-      awk -F '\t' '{print $2}' | \
+      awk -F '\t' '{print $3}' | \
       sed s/\"/\/g | \
       awk -F',' '{print $2, $1}' | \
       grep -v "Registered" | \
@@ -271,13 +272,13 @@ if [ "$NONAMES" == "0" ] ; then
     tail -n +$start $TSV | \
       grep '@' | \
       grep 'jpg\|jpeg' | \
-      awk -F '\t' '{print $2}' | \
+      awk -F '\t' '{print $3}' | \
       grep -v '^[[:blank:]]*$' > $NAMES
     
     # pronouns
     tail -n +$start $TSV | \
       grep '@' | \
-      awk -F '\t' '{print $3}' > $PRONOUNS
+      awk -F '\t' '{print $4}' > $PRONOUNS
 
   fi
   
